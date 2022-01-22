@@ -56,3 +56,35 @@ summary(aov(y ~ feed))
 # 多重比較法の代表的な検定法
 result <- aov(d1 ~ lake)
 TukeyHSD(result)
+
+# 多重比較: 3群以上の平均値が得られているときに，どの平均値間に差があるかを検定すること
+# 検定の多重性: 例えばt検定を3回実施すると有意水準が0.05よりも増加してしまうこと
+# 事前比較(a priori test): ある理論的な予測によって，ANOVAを実施せずに多重比較のデザインを前もって決めておくこと
+# 事後比較(post hoc test): 一元配置ANOVAを行った後の結果を見て群間比較のデザインを考案すること
+# 各群の分散は等しくなければいけない
+# Tukey-Kramerの方法: 群間ですべての対比較(pair-wise comparison)を同時に検定する
+# Dunnettの方法: 1つの対照群と2つ以上の処理群の対比較のみを同時に検定する
+# Schefféの方法: 対比(contrast)で表現されるすべての帰無仮説を同時に検定する
+# Williamsの方法: 1つの対照群と2つ以上の処理群があり，各群に順序付けがある場合に適用する
+# 母平均に単調増加(単調減少)を想定できるとき対照群と処理群のみを同時に検定する．検出力が高い
+# 対比較ではTukey-Kramerを使うほうが良い
+
+# Tukey-Kramer
+d <- read.csv("../dataset/table6-7.csv")
+d
+group <- factor(d$group)
+summary(aov(d$score ~ group))
+result <- aov(d$score ~ group)
+result
+TukeyHSD(result)
+
+# Dunnett
+install.packages("multcomp")
+
+library(multcomp)
+d <- read.csv("../dataset/table6-8.csv")
+group <- factor(d$group)
+res.1 <- aov(d$score ~ group)
+# スチューデント化された1検定統計量
+res.2 <- glht(res.1, linfct = mcp(group = "Dunnett"))
+summary(res.2)
