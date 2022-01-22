@@ -88,3 +88,13 @@ res.1 <- aov(d$score ~ group)
 # スチューデント化された1検定統計量
 res.2 <- glht(res.1, linfct = mcp(group = "Dunnett"))
 summary(res.2)
+
+# シーケンシャル・ボンフェローニの方法(ホルムの方法)
+# 上記の4つの多重比較法は共通して誤差自由度dfₑと誤差分散Vₑを求め，
+# 検定統計量を計算して棄却値の表からしかるべき値を見つける方法であった
+# ボンフェローニの方法は，群間の対比較でt検定を繰り返すが，その代わりに対比較の有意水準αを帰無仮説の個数に応じて一定率で調節する方法
+d <- read.csv("../dataset/table6-7.csv")
+pairwise.t.test(d$score, d$group, p.adj = "holm")
+
+d <- read.csv("../dataset/table6-9.csv")
+pairwise.t.test(d$score, d$group, p.adj = "holm")
